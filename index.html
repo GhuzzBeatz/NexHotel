@@ -1,0 +1,989 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NexHotel</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo-wrap">
+          <img
+            id="brandLogo"
+            class="brand-logo"
+            src="assets/nexhotel-logo.png"
+            alt="NexHotel logo"
+          />
+          <div id="brandFallback" class="brand-fallback">NH</div>
+        </div>
+        <div>
+          <div class="brand-title">NexHotel</div>
+          <div class="brand-sub">Gestao hoteleira local</div>
+        </div>
+      </div>
+
+      <nav class="nav" id="mainNav">
+        <button class="nav-btn active" data-page="dashboard">Dashboard</button>
+        <button class="nav-btn" data-page="quartos">Quartos</button>
+        <button class="nav-btn" data-page="reservas">Reservas</button>
+        <button class="nav-btn" data-page="hospedados">Hospedados</button>
+        <button class="nav-btn" data-page="clientes">Clientes</button>
+        <button class="nav-btn" data-page="financeiro">Financeiro</button>
+        <button class="nav-btn" data-page="estoque">Estoque</button>
+        <button class="nav-btn" data-page="funcionarios">Funcionarios</button>
+        <button class="nav-btn" data-page="ponto">Ponto</button>
+        <button class="nav-btn" data-page="ordens">Ordens de Servico</button>
+        <button class="nav-btn" data-page="contas">Contas Bancarias</button>
+        <button class="nav-btn" data-page="relatorios">Relatorios</button>
+        <button class="nav-btn" data-page="notificacoes">Notificacoes</button>
+        <button class="nav-btn" data-page="auditoria">Auditoria</button>
+        <button class="nav-btn" data-page="hospede">App Hospede</button>
+        <button class="nav-btn" data-page="equipe">App Funcionarios</button>
+        <button class="nav-btn" data-page="sobre">Sobre</button>
+      </nav>
+
+      <div class="sidebar-foot ghz-footer">
+        <div class="ghz-footer__support" title="Contato GHZ Plugin">
+          <span class="ghz-footer__dot"></span>
+          <span class="ghz-footer__support-label">Suporte GHZ</span>
+        </div>
+        <div class="ghz-footer__divider"></div>
+        <div class="ghz-footer__info">
+          <span class="ghz-footer__brand">GHZ Plugin</span>
+          <a
+            class="ghz-footer__phone"
+            href="https://web.whatsapp.com/send?phone=5511948981459"
+            data-open-external
+          >WhatsApp (11) 94898-1459</a>
+          <a
+            class="ghz-footer__site"
+            href="https://ghzplugin.com.br"
+            data-open-external
+          >GHZPLUGIN.COM.BR</a>
+        </div>
+      </div>
+    </aside>
+
+    <main class="content">
+      <section id="page-dashboard" class="page active">
+        <h1>Dashboard</h1>
+        <p class="sub">Controle geral da operacao em tempo real no ambiente local.</p>
+
+        <div class="kpis">
+          <div class="kpi">
+            <div class="kpi-label">Quartos</div>
+            <div class="kpi-value" id="kpiRooms">0</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Ocupados</div>
+            <div class="kpi-value" id="kpiOccupied">0</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Reservas Ativas</div>
+            <div class="kpi-value" id="kpiReservations">0</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Receita do Mes</div>
+            <div class="kpi-value" id="kpiRevenue">R$ 0,00</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Saldo Geral</div>
+            <div class="kpi-value" id="kpiBalance">R$ 0,00</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Check-out Proximo (3 dias)</div>
+          <table>
+            <thead>
+              <tr>
+                <th>Reserva</th>
+                <th>Hospede</th>
+                <th>Quarto</th>
+                <th>Check-out</th>
+                <th>Pendente</th>
+              </tr>
+            </thead>
+            <tbody id="tbDashCheckout"></tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Alertas do Sistema</div>
+          <table>
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Mensagem</th>
+                <th>Prioridade</th>
+              </tr>
+            </thead>
+            <tbody id="tbDashAlerts"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="page-quartos" class="page">
+        <h1>Quartos</h1>
+        <p class="sub">Cadastro e controle de ocupacao e manutencao.</p>
+
+        <div class="card">
+          <div class="grid grid-5">
+            <input id="roomNumber" placeholder="Numero do quarto" />
+            <select id="roomCategory">
+              <option value="STANDARD">Standard</option>
+              <option value="LUXO">Luxo</option>
+              <option value="SUITE">Suite</option>
+              <option value="MASTER">Master</option>
+            </select>
+            <input id="roomRate" placeholder="Diaria (R$)" />
+            <select id="roomBaseStatus">
+              <option value="DISPONIVEL">Disponivel</option>
+              <option value="MANUTENCAO">Manutencao</option>
+            </select>
+            <input id="roomNotes" placeholder="Observacoes" />
+          </div>
+          <div class="actions">
+            <button id="btnSaveRoom" class="btn primary">Salvar quarto</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="toolbar">
+            <input id="searchRoom" placeholder="Buscar por numero, categoria ou status" />
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Numero</th>
+                <th>Categoria</th>
+                <th>Diaria</th>
+                <th>Status</th>
+                <th>Hospede</th>
+                <th>Observacoes</th>
+                <th>Acoes</th>
+              </tr>
+            </thead>
+            <tbody id="tbRooms"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="page-reservas" class="page">
+        <h1>Reservas</h1>
+        <p class="sub">Gestao completa de check-in, hospedagem e check-out.</p>
+
+        <div class="card">
+          <div class="grid grid-6">
+            <div class="lookup span-3">
+              <input id="resGuestSearch" placeholder="Pesquisar hospede por nome, documento ou telefone" autocomplete="off" />
+              <input id="resGuestId" type="hidden" />
+              <div id="resGuestResults" class="lookup-results"></div>
+            </div>
+            <select id="resRoom"></select>
+            <input id="resCheckin" type="date" />
+            <input id="resCheckout" type="date" />
+            <input id="resAdults" placeholder="Adultos" value="1" />
+            <input id="resChildren" placeholder="Criancas" value="0" />
+            <input id="resDaily" placeholder="Diaria personalizada (R$)" />
+            <input id="resExtra" placeholder="Extras iniciais (R$)" />
+            <select id="resStatus">
+              <option value="AGENDADA">Agendada</option>
+              <option value="CONFIRMADA">Confirmada</option>
+              <option value="HOSPEDADO">Hospedado</option>
+              <option value="CHECKOUT">Check-out</option>
+              <option value="CANCELADA">Cancelada</option>
+            </select>
+            <select id="resChannel">
+              <option value="BALCAO">Balcao</option>
+              <option value="SITE">Site</option>
+              <option value="WHATSAPP">WhatsApp</option>
+              <option value="BOOKING">Booking</option>
+              <option value="OUTRO">Outro</option>
+            </select>
+            <input id="resNotes" placeholder="Observacoes da reserva" />
+          </div>
+          <div class="actions">
+            <button id="btnSaveReservation" class="btn primary">Salvar reserva</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="toolbar">
+            <input id="searchReservation" placeholder="Buscar por codigo, hospede, quarto ou status" />
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Codigo</th>
+                <th>Hospede</th>
+                <th>Quarto</th>
+                <th>Periodo</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th>Pago</th>
+                <th>Pendente</th>
+                <th>Acoes</th>
+              </tr>
+            </thead>
+            <tbody id="tbReservations"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="page-hospedados" class="page">
+        <h1>Hospedados</h1>
+        <p class="sub">Painel separado para acompanhar apenas clientes que estao hospedados agora.</p>
+
+        <div class="kpis">
+          <div class="kpi">
+            <div class="kpi-label">Hospedes Atuais</div>
+            <div class="kpi-value" id="hostedCount">0</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Total Em Aberto</div>
+            <div class="kpi-value" id="hostedTotal">R$ 0,00</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Pago</div>
+            <div class="kpi-value" id="hostedPaid">R$ 0,00</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Falta Receber</div>
+            <div class="kpi-value" id="hostedPending">R$ 0,00</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Check-outs Hoje</div>
+            <div class="kpi-value" id="hostedCheckoutToday">0</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="toolbar">
+            <input id="searchHosted" placeholder="Buscar por hospede, quarto ou codigo da reserva" />
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Reserva</th>
+                <th>Hospede</th>
+                <th>Quarto</th>
+                <th>Periodo</th>
+                <th>Total</th>
+                <th>Pago</th>
+                <th>Falta</th>
+                <th>Acoes</th>
+              </tr>
+            </thead>
+            <tbody id="tbHosted"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="page-clientes" class="page">
+        <h1>Clientes</h1>
+        <p class="sub">Cadastro de hospedes com historico interno.</p>
+
+        <div class="card">
+          <input id="guestImportFile" type="file" accept=".xlsx" hidden />
+          <div class="grid grid-5">
+            <input id="guestEditId" type="hidden" />
+            <input id="guestName" placeholder="Nome completo" />
+            <input id="guestDoc" placeholder="Documento" />
+            <input id="guestPhone" placeholder="Telefone" />
+            <input id="guestEmail" placeholder="Email" />
+            <input id="guestBirth" type="date" />
+            <input id="guestCity" placeholder="Cidade" />
+            <input id="guestNotes" class="span-3" placeholder="Observacoes do cliente" />
+          </div>
+          <div class="actions">
+            <button id="btnSaveGuest" class="btn primary">Salvar cliente</button>
+            <button id="btnCancelGuestEdit" class="btn" hidden>Cancelar edicao</button>
+            <button id="btnImportGuests" class="btn">Importar clientes (.xlsx)</button>
+            <button id="btnExportGuests" class="btn">Exportar clientes (.xlsx)</button>
+            <button id="btnDownloadGuestTemplate" class="btn">Modelo de planilha</button>
+          </div>
+          <div id="guestImportStatus" class="helper-text">Colunas aceitas: Nome, Documento, Telefone, Email, Data Nascimento, Cidade, Observacoes.</div>
+        </div>
+
+        <div class="card">
+          <div class="toolbar">
+            <input id="searchGuest" placeholder="Buscar cliente por nome, documento ou contato" />
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Documento</th>
+                <th>Telefone</th>
+                <th>Email</th>
+                <th>Cidade</th>
+                <th>Acoes</th>
+              </tr>
+            </thead>
+            <tbody id="tbGuests"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="page-financeiro" class="page">
+        <h1>Financeiro</h1>
+        <p class="sub">Receitas, despesas e fechamento de caixa.</p>
+
+        <div class="kpis compact">
+          <div class="kpi">
+            <div class="kpi-label">Receitas</div>
+            <div class="kpi-value" id="finRevenue">R$ 0,00</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Despesas</div>
+            <div class="kpi-value" id="finExpense">R$ 0,00</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Saldo</div>
+            <div class="kpi-value" id="finBalance">R$ 0,00</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="grid grid-6">
+            <select id="finType">
+              <option value="RECEITA">Receita</option>
+              <option value="DESPESA">Despesa</option>
+            </select>
+            <input id="finCategory" placeholder="Categoria (hospedagem, consumo...)" />
+            <select id="finMethod">
+              <option value="PIX">PIX</option>
+              <option value="CARTAO">Cartao</option>
+              <option value="DINHEIRO">Dinheiro</option>
+              <option value="TRANSFERENCIA">Transferencia</option>
+              <option value="INTERNO">Interno</option>
+            </select>
+            <select id="finAccount"></select>
+            <select id="finReservation"></select>
+            <input id="finDate" type="date" />
+            <input id="finAmount" placeholder="Valor (R$)" />
+            <input id="finDesc" class="span-3" placeholder="Descricao do lancamento" />
+          </div>
+          <div class="actions">
+            <button id="btnSaveFinance" class="btn primary">Salvar lancamento</button>
+            <button id="btnCloseCash" class="btn">Fechar caixa (log)</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Tipo</th>
+                <th>Categoria</th>
+                <th>Metodo</th>
+                <th>Conta</th>
+                <th>Reserva</th>
+                <th>Descricao</th>
+                <th>Valor</th>
+                <th>Status</th>
+                <th>Acoes</th>
+              </tr>
+            </thead>
+            <tbody id="tbFinance"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="page-estoque" class="page">
+        <h1>Estoque</h1>
+        <p class="sub">Cadastro de itens e baixa automatizada de consumo.</p>
+
+        <div class="card">
+          <div class="grid grid-6">
+            <input id="itemName" placeholder="Nome do item" />
+            <input id="itemUnit" placeholder="Unidade (un, kg, lt...)" />
+            <input id="itemMin" placeholder="Estoque minimo" />
+            <input id="itemQty" placeholder="Quantidade inicial" />
+            <input id="itemCost" placeholder="Custo medio (R$)" />
+            <input id="itemSupplier" placeholder="Fornecedor" />
+          </div>
+          <div class="actions">
+            <button id="btnSaveItem" class="btn primary">Salvar item</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="grid grid-6">
+            <select id="movItem"></select>
+            <select id="movType">
+              <option value="ENTRADA">Entrada</option>
+              <option value="SAIDA">Saida</option>
+            </select>
+            <input id="movQty" placeholder="Quantidade" />
+            <input id="movReason" placeholder="Motivo" />
+            <input id="movDate" type="date" />
+          </div>
+          <div class="actions">
+            <button id="btnSaveMovement" class="btn primary">Registrar movimento</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Itens de Estoque</div>
+          <table>
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Qtd</th>
+                <th>Minimo</th>
+                <th>Unidade</th>
+                <th>Custo</th>
+                <th>Fornecedor</th>
+                <th>Status</th>
+                <th>Acoes</th>
+              </tr>
+            </thead>
+            <tbody id="tbStockItems"></tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Historico de Movimentos</div>
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Item</th>
+                <th>Tipo</th>
+                <th>Qtd</th>
+                <th>Motivo</th>
+              </tr>
+            </thead>
+            <tbody id="tbStockMoves"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="page-funcionarios" class="page">
+        <h1>Funcionarios</h1>
+        <p class="sub">Gestao de equipe e controle operacional.</p>
+
+        <div class="card">
+          <div class="grid grid-6">
+            <input id="staffName" placeholder="Nome completo" />
+            <input id="staffRole" placeholder="Cargo" />
+            <input id="staffPhone" placeholder="Telefone" />
+            <input id="staffEmail" placeholder="Email" />
+            <input id="staffShift" placeholder="Turno" />
+            <select id="staffStatus">
+              <option value="ATIVO">Ativo</option>
+              <option value="INATIVO">Inativo</option>
+            </select>
+          </div>
+          <div class="actions">
+            <button id="btnSaveStaff" class="btn primary">Salvar funcionario</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="toolbar">
+            <input id="searchStaff" placeholder="Buscar por nome, cargo ou contato" />
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Cargo</th>
+                <th>Turno</th>
+                <th>Status</th>
+                <th>Contato</th>
+                <th>Acoes</th>
+              </tr>
+            </thead>
+            <tbody id="tbStaff"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="page-ponto" class="page">
+        <h1>Ponto</h1>
+        <p class="sub">Registro de entrada, saida, pausa e retorno.</p>
+
+        <div class="card">
+          <div class="grid grid-6">
+            <select id="pointStaff"></select>
+            <select id="pointType">
+              <option value="ENTRADA">Entrada</option>
+              <option value="SAIDA">Saida</option>
+              <option value="PAUSA">Pausa</option>
+              <option value="RETORNO">Retorno</option>
+            </select>
+            <input id="pointDateTime" type="datetime-local" />
+            <input id="pointNote" class="span-3" placeholder="Observacao (opcional)" />
+          </div>
+          <div class="actions">
+            <button id="btnSavePoint" class="btn primary">Registrar ponto</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <table>
+            <thead>
+              <tr>
+                <th>Data/Hora</th>
+                <th>Funcionario</th>
+                <th>Tipo</th>
+                <th>Observacao</th>
+              </tr>
+            </thead>
+            <tbody id="tbPoint"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="page-ordens" class="page">
+        <h1>Ordens de Servico</h1>
+        <p class="sub">Solicitacoes de limpeza, manutencao e atendimento.</p>
+
+        <div class="card">
+          <div class="grid grid-6">
+            <select id="osCategory">
+              <option value="LIMPEZA">Limpeza</option>
+              <option value="MANUTENCAO">Manutencao</option>
+              <option value="ATENDIMENTO">Atendimento</option>
+              <option value="ALIMENTACAO">Alimentacao</option>
+              <option value="OUTRO">Outro</option>
+            </select>
+            <select id="osPriority">
+              <option value="BAIXA">Baixa</option>
+              <option value="MEDIA">Media</option>
+              <option value="ALTA">Alta</option>
+              <option value="URGENTE">Urgente</option>
+            </select>
+            <select id="osStatus">
+              <option value="ABERTA">Aberta</option>
+              <option value="EM_ANDAMENTO">Em andamento</option>
+              <option value="FINALIZADA">Finalizada</option>
+              <option value="CANCELADA">Cancelada</option>
+            </select>
+            <select id="osRoom"></select>
+            <select id="osGuest"></select>
+            <select id="osAssignee"></select>
+            <input id="osDeadline" type="datetime-local" />
+            <input id="osDesc" class="span-3" placeholder="Descricao da ordem de servico" />
+          </div>
+          <div class="actions">
+            <button id="btnSaveOrder" class="btn primary">Salvar OS</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="toolbar">
+            <input id="searchOrder" placeholder="Buscar por codigo, categoria, responsavel ou status" />
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Codigo</th>
+                <th>Categoria</th>
+                <th>Quarto</th>
+                <th>Responsavel</th>
+                <th>Prazo</th>
+                <th>Status</th>
+                <th>Prioridade</th>
+                <th>Acoes</th>
+              </tr>
+            </thead>
+            <tbody id="tbOrders"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="page-contas" class="page">
+        <h1>Contas Bancarias</h1>
+        <p class="sub">Controle das contas e saldos por movimentacao.</p>
+
+        <div class="card">
+          <div class="grid grid-6">
+            <input id="accName" placeholder="Nome da conta" />
+            <input id="accBank" placeholder="Banco" />
+            <input id="accAgency" placeholder="Agencia" />
+            <input id="accNumber" placeholder="Conta" />
+            <input id="accInitialBalance" placeholder="Saldo inicial (R$)" />
+          </div>
+          <div class="actions">
+            <button id="btnSaveAccount" class="btn primary">Salvar conta</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <table>
+            <thead>
+              <tr>
+                <th>Conta</th>
+                <th>Banco</th>
+                <th>Agencia</th>
+                <th>Numero</th>
+                <th>Saldo Atual</th>
+                <th>Acoes</th>
+              </tr>
+            </thead>
+            <tbody id="tbAccounts"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="page-relatorios" class="page">
+        <h1>Relatorios</h1>
+        <p class="sub">Analise ocupacao, receita, consumo e produtividade.</p>
+
+        <div class="card">
+          <div class="grid grid-6">
+            <input id="repStart" type="date" />
+            <input id="repEnd" type="date" />
+            <select id="repStatus">
+              <option value="">Status da reserva (todos)</option>
+              <option value="AGENDADA">Agendada</option>
+              <option value="CONFIRMADA">Confirmada</option>
+              <option value="HOSPEDADO">Hospedado</option>
+              <option value="CHECKOUT">Check-out</option>
+              <option value="CANCELADA">Cancelada</option>
+            </select>
+            <input id="repCategory" placeholder="Categoria financeira (opcional)" />
+          </div>
+          <div class="actions">
+            <button id="btnGenerateReport" class="btn primary">Gerar relatorio</button>
+            <button id="btnPrintReport" class="btn">Imprimir relatorio</button>
+          </div>
+          <div id="repSummary" class="report-summary">Nenhum relatorio gerado.</div>
+        </div>
+
+        <div class="card">
+          <table>
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Referencia</th>
+                <th>Data</th>
+                <th>Status</th>
+                <th>Categoria</th>
+                <th>Valor</th>
+              </tr>
+            </thead>
+            <tbody id="tbReport"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="page-notificacoes" class="page">
+        <h1>Notificacoes</h1>
+        <p class="sub">Alertas operacionais e mensagens internas do sistema.</p>
+        <div class="card">
+          <div class="actions">
+            <button id="btnMarkAllRead" class="btn">Marcar todas como lidas</button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Titulo</th>
+                <th>Mensagem</th>
+                <th>Nivel</th>
+                <th>Status</th>
+                <th>Acoes</th>
+              </tr>
+            </thead>
+            <tbody id="tbNotifications"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="page-auditoria" class="page">
+        <h1>Auditoria</h1>
+        <p class="sub">Historico de acoes realizadas no sistema.</p>
+        <div class="card">
+          <div class="toolbar">
+            <input id="searchAudit" placeholder="Buscar acao, modulo ou detalhe" />
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Acao</th>
+                <th>Detalhes</th>
+              </tr>
+            </thead>
+            <tbody id="tbAudit"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="page-hospede" class="page">
+        <h1>App Hospede</h1>
+        <p class="sub">Portal interno de atendimento digital do hospede.</p>
+
+        <div class="card">
+          <div class="grid grid-6">
+            <input id="guestPortalCode" placeholder="Codigo da reserva (ex: RSV-123456)" />
+          </div>
+          <div class="actions">
+            <button id="btnGuestLookup" class="btn primary">Consultar reserva</button>
+          </div>
+          <div id="guestPanelContent" class="panel-box">Nenhuma reserva selecionada.</div>
+        </div>
+
+        <div class="card">
+          <div class="grid grid-6">
+            <select id="guestRequestType">
+              <option value="LIMPEZA">Solicitar limpeza</option>
+              <option value="MANUTENCAO">Solicitar manutencao</option>
+              <option value="PEDIDO">Pedir item/consumo</option>
+              <option value="ATENDIMENTO">Solicitar atendimento</option>
+              <option value="PAGAMENTO">Informar pagamento</option>
+            </select>
+            <input id="guestRequestValue" placeholder="Valor (R$) quando aplicavel" />
+            <input id="guestRequestText" class="span-3" placeholder="Mensagem do hospede" />
+          </div>
+          <div class="actions">
+            <button id="btnGuestRequest" class="btn primary">Enviar solicitacao</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-equipe" class="page">
+        <h1>App Funcionarios</h1>
+        <p class="sub">Painel rapido para tarefas e ponto da equipe.</p>
+
+        <div class="card">
+          <div class="grid grid-6">
+            <select id="staffPanelUser"></select>
+          </div>
+          <div class="actions">
+            <button id="btnPanelCheckin" class="btn primary">Registrar entrada</button>
+            <button id="btnPanelCheckout" class="btn">Registrar saida</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Ordens Atribuidas</div>
+          <table>
+            <thead>
+              <tr>
+                <th>Codigo</th>
+                <th>Categoria</th>
+                <th>Quarto</th>
+                <th>Status</th>
+                <th>Prioridade</th>
+                <th>Acoes</th>
+              </tr>
+            </thead>
+            <tbody id="tbStaffOpenOrders"></tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Pontos Recentes</div>
+          <table>
+            <thead>
+              <tr>
+                <th>Data/Hora</th>
+                <th>Tipo</th>
+                <th>Observacao</th>
+              </tr>
+            </thead>
+            <tbody id="tbStaffRecentPoint"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="page-sobre" class="page">
+        <h1>Sobre</h1>
+        <p class="sub">Informacoes da GHZ Plugin e guia detalhado de uso do NexHotel.</p>
+
+        <div class="card">
+          <div class="card-title">Contato GHZ Plugin</div>
+          <div class="panel-box">
+            <strong>Empresa:</strong> GHZ Plugin<br />
+            <strong>Suporte comercial e tecnico:</strong> WhatsApp (11) 94898-1459<br />
+            <strong>Link rapido:</strong>
+            <a
+              href="https://web.whatsapp.com/send?phone=5511948981459"
+              data-open-external
+            >Abrir WhatsApp GHZ Plugin</a><br />
+            <strong>Produto:</strong> NexHotel Desktop (Electron, local na maquina)
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Como Usar o NexHotel (Passo a Passo)</div>
+          <div class="panel-box">
+            <strong>1) Primeira configuracao</strong><br />
+            - Abra a aba <strong>Contas Bancarias</strong> e cadastre as contas que vao receber/pagar movimentacoes.<br />
+            - Abra a aba <strong>Funcionarios</strong> e cadastre a equipe para habilitar Ponto e Ordens de Servico.<br />
+            - Abra a aba <strong>Quartos</strong> e cadastre numero, categoria e diaria de todos os quartos.<br /><br />
+
+            <strong>2) Cadastro de clientes</strong><br />
+            - Na aba <strong>Clientes</strong>, registre nome, documento, telefone e email do hospede.<br />
+            - Complete cidade e observacoes para melhorar historico e atendimento.<br /><br />
+            - Para muitos clientes, clique em <strong>Modelo de planilha</strong>, preencha no Excel e importe em <strong>Importar clientes (.xlsx)</strong>.<br />
+            - Use <strong>Exportar clientes (.xlsx)</strong> para gerar uma planilha de backup ou conferencia.<br /><br />
+
+            <strong>3) Criacao de reservas</strong><br />
+            - Na aba <strong>Reservas</strong>, pesquise o cliente pelo nome/documento/telefone, selecione o resultado e defina quarto + check-in/check-out.<br />
+            - Defina status inicial (Agendada/Confirmada) e canal de origem.<br />
+            - O sistema calcula total de diaria + extras automaticamente.<br /><br />
+
+            <strong>4) Fluxo operacional diario</strong><br />
+            - Check-in: altere status para <strong>HOSPEDADO</strong> quando o cliente entrar.<br />
+            - Na aba <strong>Quartos</strong>, use <strong>Hospedar</strong> em um quarto livre para fazer check-in direto, buscando um cliente ja cadastrado ou cadastrando um novo na hora.<br />
+            - Na aba <strong>Hospedados</strong>, acompanhe somente quem esta dentro do hotel, com total, valor pago e valor faltante.<br />
+            - Se o hospede precisar trocar de quarto durante a estadia, use <strong>Transferir quarto</strong> na linha da reserva hospedada. O sistema mostra apenas quartos livres, fora de manutencao e sem conflito no periodo.<br />
+            - Durante estadia: registre consumos/extras pela reserva e/ou lancamentos financeiros.<br />
+            - Check-out: use <strong>Fechar conta</strong> na aba Hospedados. Se houver saldo pendente, o sistema orienta adicionar pagamento antes de finalizar.<br /><br />
+
+            <strong>5) Financeiro completo</strong><br />
+            - Na aba <strong>Financeiro</strong>, registre receitas e despesas com metodo de pagamento.<br />
+            - Vincule a reserva quando o lancamento estiver relacionado a hospedagem/consumo.<br />
+            - Use <strong>Adicionar pagamento</strong> em Hospedados, Reservas ou Quartos para receber de forma rapida sem sair da operacao.<br />
+            - Se lancar valor errado, use <strong>Cancelar</strong> na linha do lancamento. O sistema nao apaga o historico: ele marca como <strong>CANCELADO</strong> e remove o valor dos totais, saldo, reserva e relatorios.<br />
+            - Use <strong>Fechar caixa (log)</strong> ao fim do dia para guardar consolidado na auditoria.<br /><br />
+
+            <strong>6) Estoque</strong><br />
+            - Cadastre itens (ex.: bebidas, alimentos, amenities) e estoque minimo.<br />
+            - Registre entrada e saida de itens em cada movimentacao.<br />
+            - Acompanhe alertas de reposicao quando atingir nivel minimo.<br /><br />
+
+            <strong>7) Funcionarios, ponto e ordens</strong><br />
+            - Use <strong>Ponto</strong> para entrada, saida, pausa e retorno da equipe.<br />
+            - Use <strong>Ordens de Servico</strong> para limpeza, manutencao e atendimento ao quarto.<br />
+            - No <strong>App Funcionarios</strong>, o colaborador ve ordens abertas e registra ponto rapido.<br /><br />
+
+            <strong>8) App Hospede (interno)</strong><br />
+            - Na aba <strong>App Hospede</strong>, consulte a reserva pelo codigo.<br />
+            - O hospede pode solicitar limpeza/manutencao/atendimento e informar pagamento.<br />
+            - Solicitacoes viram registros internos (OS/Financeiro) para controle centralizado.<br />
+            - Pagamentos e consumos lancados pelo App Hospede aparecem no extrato financeiro da reserva e tambem podem ser cancelados se forem registrados com valor incorreto.<br /><br />
+
+            <strong>9) Relatorios e auditoria</strong><br />
+            - Em <strong>Relatorios</strong>, filtre por periodo/status para analisar performance.<br />
+            - Em <strong>Auditoria</strong>, acompanhe o historico de acoes e alteracoes do sistema.<br />
+            - Em <strong>Notificacoes</strong>, monitore alertas de operacao e pendencias.<br /><br />
+
+            <strong>10) Recibo simples</strong><br />
+            - Use <strong>Gerar recibo</strong> para imprimir ou salvar em PDF um comprovante simples de hospedagem e pagamento.<br />
+            - O recibo mostra hospede, quarto, periodo, total, valor pago, formas de pagamento e assinaturas.<br />
+            - O recibo e um comprovante simples, <strong>sem valor fiscal</strong>, e nao substitui nota fiscal.<br /><br />
+
+            <strong>11) Boas praticas</strong><br />
+            - Cadastre dados sempre completos (cliente, reserva e financeiro vinculados).<br />
+            - Mantenha status das reservas atualizado em tempo real.<br />
+            - Revise notificacoes no inicio/final do expediente.<br />
+            - Faca exportacao/backup periodico do JSON local da aplicacao.
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="appDialog" class="dialog-backdrop" hidden>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="appDialogTitle">
+      <div id="appDialogTitle" class="dialog-title">Confirmar acao</div>
+      <div id="appDialogMessage" class="dialog-message"></div>
+      <div class="dialog-actions">
+        <button id="appDialogCancel" class="btn">Cancelar</button>
+        <button id="appDialogOk" class="btn primary">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="transferDialog" class="dialog-backdrop" hidden>
+    <div class="dialog dialog-wide" role="dialog" aria-modal="true" aria-labelledby="transferDialogTitle">
+      <div id="transferDialogTitle" class="dialog-title">Transferir quarto</div>
+      <div id="transferDialogInfo" class="dialog-message"></div>
+      <label class="dialog-label" for="transferRoomSelect">Novo quarto disponivel</label>
+      <select id="transferRoomSelect"></select>
+      <div id="transferDialogHelp" class="helper-text"></div>
+      <div class="dialog-actions">
+        <button id="transferDialogCancel" class="btn">Voltar</button>
+        <button id="transferDialogOk" class="btn primary">Transferir</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="hostDialog" class="dialog-backdrop" hidden>
+    <div class="dialog dialog-wide dialog-scroll" role="dialog" aria-modal="true" aria-labelledby="hostDialogTitle">
+      <div id="hostDialogTitle" class="dialog-title">Hospedar direto</div>
+      <div id="hostDialogInfo" class="dialog-message"></div>
+
+      <div class="form-section-title">Cliente ja cadastrado</div>
+      <div class="lookup">
+        <input id="hostGuestSearch" placeholder="Buscar cliente por nome, documento ou telefone" autocomplete="off" />
+        <input id="hostGuestId" type="hidden" />
+        <div id="hostGuestResults" class="lookup-results"></div>
+      </div>
+
+      <div class="form-section-title">Ou cadastrar novo cliente</div>
+      <div class="grid grid-4">
+        <input id="hostNewName" placeholder="Nome completo" />
+        <input id="hostNewDoc" placeholder="Documento" />
+        <input id="hostNewPhone" placeholder="Telefone" />
+        <input id="hostNewEmail" placeholder="Email" />
+      </div>
+
+      <div class="form-section-title">Dados da hospedagem</div>
+      <div class="grid grid-4">
+        <input id="hostCheckin" type="date" />
+        <input id="hostCheckout" type="date" />
+        <input id="hostAdults" placeholder="Adultos" value="1" />
+        <input id="hostChildren" placeholder="Criancas" value="0" />
+        <input id="hostDaily" placeholder="Diaria (R$)" />
+        <input id="hostExtra" placeholder="Extras iniciais (R$)" />
+        <input id="hostPaymentAmount" placeholder="Pagamento inicial (R$ opcional)" />
+        <select id="hostPaymentMethod">
+          <option value="PIX">PIX</option>
+          <option value="CARTAO">Cartao</option>
+          <option value="DINHEIRO">Dinheiro</option>
+          <option value="TRANSFERENCIA">Transferencia</option>
+        </select>
+        <select id="hostPaymentAccount"></select>
+        <input id="hostNotes" class="span-3" placeholder="Observacoes" />
+      </div>
+      <div class="helper-text">Use cliente cadastrado ou preencha o novo cliente. O quarto sera hospedado imediatamente.</div>
+
+      <div class="dialog-actions">
+        <button id="hostDialogCancel" class="btn">Voltar</button>
+        <button id="hostDialogOk" class="btn primary">Hospedar agora</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="paymentDialog" class="dialog-backdrop" hidden>
+    <div class="dialog dialog-wide" role="dialog" aria-modal="true" aria-labelledby="paymentDialogTitle">
+      <div id="paymentDialogTitle" class="dialog-title">Adicionar pagamento</div>
+      <div id="paymentDialogInfo" class="dialog-message"></div>
+      <div class="grid grid-4">
+        <input id="quickPaymentAmount" placeholder="Valor recebido (R$)" />
+        <select id="quickPaymentMethod">
+          <option value="PIX">PIX</option>
+          <option value="CARTAO">Cartao</option>
+          <option value="DINHEIRO">Dinheiro</option>
+          <option value="TRANSFERENCIA">Transferencia</option>
+        </select>
+        <select id="quickPaymentAccount"></select>
+        <input id="quickPaymentDesc" placeholder="Observacao do pagamento" />
+      </div>
+      <div class="helper-text">O pagamento fica vinculado a reserva e pode ser cancelado no Financeiro se for lancado errado.</div>
+      <div class="dialog-actions">
+        <button id="paymentDialogCancel" class="btn">Voltar</button>
+        <button id="paymentDialogOk" class="btn primary">Salvar pagamento</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="js/util.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

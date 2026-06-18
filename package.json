@@ -1,0 +1,48 @@
+{
+  "name": "nexhotel",
+  "version": "1.0.0",
+  "description": "NexHotel - Sistema completo de gestao para hoteis",
+  "main": "main.js",
+  "author": "GHZ Plugin",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win --x64"
+  },
+  "build": {
+    "appId": "com.ghzplugin.nexhotel",
+    "productName": "NexHotel",
+    "directories": {
+      "output": "dist_installer_v2"
+    },
+    "files": [
+      "**/*",
+      "!dist_installer/**",
+      "!node_modules/.cache/**"
+    ],
+    "win": {
+      "icon": "assets/nexhotel-icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "NexHotel"
+    }
+  },
+  "devDependencies": {
+    "electron": "^28.3.3",
+    "electron-builder": "^24.13.3"
+  },
+  "dependencies": {
+    "xlsx": "^0.18.5"
+  }
+}
