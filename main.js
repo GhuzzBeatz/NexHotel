@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 const fs = require('fs')
 
@@ -150,6 +150,12 @@ function createWindow() {
 }
 
 app.setAppUserModelId(APP_ID)
+
+require('./js/ghz-backend')({
+  app, ipcMain, getDataDir: ensureDataDir,
+  appId: 'nexhotel',
+  manifestUrl: 'https://raw.githubusercontent.com/GhuzzBeatz/NexHotel/master/update-manifest.json'
+})
 
 app.whenReady().then(createWindow)
 

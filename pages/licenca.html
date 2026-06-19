@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><link rel="stylesheet" href="../css/style.css"><script src="../js/licenca.js"></script><script src="../js/util.js"></script></head>
+<body>
+<div class="lic-body">
+  <div class="lic-box">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:28px">
+      <div style="width:52px;height:52px;background:linear-gradient(135deg,#f5bf46,#cf8f20);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 6px 20px rgba(245,191,70,0.4)">🏨</div>
+      <div>
+        <div style="font-size:26px;font-weight:900;color:var(--txt,#ecf3ff)">Nex<span style="color:#f5bf46">Hotel</span></div>
+        <div style="font-size:12px;color:var(--muted,#93aad6);margin-top:2px">Gestao Hoteleira Local — Ativacao</div>
+      </div>
+    </div>
+    <div style="font-size:14px;font-weight:700;color:var(--txt,#ecf3ff);margin-bottom:6px">Insira sua Chave de Licenca</div>
+    <div style="font-size:12px;color:var(--muted,#93aad6);margin-bottom:20px;line-height:1.6">
+      Apos a compra, a chave foi enviada via mensagem.<br>
+      Formato: <span style="font-family:monospace;color:#f5bf46;font-weight:700">NEXHTL-XXXX-XXXX-XXXX-XXXX</span>
+    </div>
+    <input class="lic-input" id="inputChave" maxlength="30" placeholder="NEXHTL-XXXX-XXXX-XXXX-XXXX" oninput="fmt(this)" onkeydown="if(event.key==='Enter')ativar()">
+    <button class="lic-btn" id="btnAtivar" onclick="ativar()">🔑 Ativar Licenca</button>
+    <div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:#ef4444;border-radius:8px;padding:9px 13px;font-size:13px;font-weight:600;margin-top:12px;display:none" id="erro"></div>
+    <div style="background:rgba(45,212,191,.1);border:1px solid rgba(45,212,191,.25);color:#2dd4bf;border-radius:8px;padding:9px 13px;font-size:13px;font-weight:600;margin-top:12px;display:none" id="msgOk"></div>
+    <div id="deviceBox" style="margin-top:16px;padding:8px 12px;background:rgba(255,255,255,.03);border-radius:8px;font-size:11px;color:var(--muted,#93aad6);display:none">
+      <b>Computador:</b> <span id="dName">—</span> · <b>Sistema:</b> <span id="dOs">—</span>
+    </div>
+    <div style="text-align:center;margin-top:22px;font-size:11px;color:var(--muted,#93aad6)">Suporte: WhatsApp (11) 94898-1459 · GHZPLUGIN@GMAIL.COM</div>
+  </div>
+</div>
+<script>
+if (typeof aplicarTemaAtual === 'function') aplicarTemaAtual()
+
+function fmt(inp) {
+  let v = inp.value.toUpperCase().replace(/[^A-Z0-9]/g, ''), r = ''
+  const p = v.match(/^[A-Z]+/)
+  const prefixLen = p ? Math.min(p[0].length, 6) : 0
+  const parts = []
+  let pos = 0
+  if (prefixLen > 0) { parts.push(v.slice(0, prefixLen)); pos = prefixLen }
+  while (pos < v.length) { parts.push(v.slice(pos, pos + 4)); pos += 4 }
+  inp.value = parts.join('-')
+}
+
+async function ativar() {
+  const btn = document.getElementById('btnAtivar')
+  const chave = document.getElementById('inputChave').value.trim().toUpperCase()
+  if (!chave || chave.length < 10) { mostrarErro('Insira uma chave valida.'); return }
+
+  btn.disabled = true
+  btn.textContent = '⏳ Validando...'
+  document.getElementById('erro').style.display = 'none'
+
+  try {
+    const state = await require('electron').ipcRenderer.invoke('license:get-state')
+    let result
+    if (state.active && state.license_key === chave) {
+      result = await ghzLicense.validateOnline()
+    } else {
+      result = await ghzLicense.activateOnline(chave)
+    }
+
+    if (result?.ok) {
+      ghzLicense.markSession()
+      document.getElementById('msgOk').textContent = '✅ Licenca ativada com sucesso!'
+      document.getElementById('msgOk').style.display = 'block'
+      setTimeout(() => { window.location.replace('../index.html') }, 800)
+      return
+    } else {
+      mostrarErro(result?.message || 'Chave invalida. Verifique e tente novamente.')
+    }
+  } catch (e) {
+    mostrarErro('Erro de conexao. Verifique sua internet e tente novamente.')
+  }
+
+  btn.disabled = false
+  btn.textContent = '🔑 Ativar Licenca'
+}
+
+function mostrarErro(txt) {
+  const el = document.getElementById('erro')
+  el.textContent = txt
+  el.style.display = 'block'
+  document.getElementById('inputChave').style.borderColor = '#ef4444'
+  setTimeout(() => { el.style.display = 'none'; document.getElementById('inputChave').style.borderColor = '' }, 5000)
+}
+
+;(async function init() {
+  try {
+    const { ipcRenderer } = require('electron')
+    const [device, state] = await Promise.all([
+      ipcRenderer.invoke('license:device-info'),
+      ipcRenderer.invoke('license:get-state')
+    ])
+    document.getElementById('dName').textContent = device.device_name
+    document.getElementById('dOs').textContent = device.device_os
+    document.getElementById('deviceBox').style.display = ''
+    if (state.license_key) {
+      document.getElementById('inputChave').value = state.license_key
+      if (state.active) document.getElementById('btnAtivar').textContent = '🔓 Entrar'
+    }
+  } catch (e) {}
+})()
+</script>
+</body></html>
