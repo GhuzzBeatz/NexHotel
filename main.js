@@ -8,6 +8,27 @@ const WINDOW_OVERLAY_COLOR = '#00000000'
 const WINDOW_OVERLAY_HEIGHT = 18
 const ICON_PATH = path.join(__dirname, 'assets', 'nexhotel-icon.ico')
 
+const gotSingleInstanceLock = app.requestSingleInstanceLock()
+if (!gotSingleInstanceLock) app.quit()
+
+let win = null
+let ghzBackend = null
+
+app.on('second-instance', () => {
+  if (!win) return
+  if (win.isMinimized()) win.restore()
+  win.show()
+  win.focus()
+})
+
+function isLicensePageUrl(url) {
+  try { return decodeURIComponent(new URL(url).pathname).replace(/\\/g, '/').endsWith('/pages/licenca.html') } catch (e) { return false }
+}
+
+function loadLicensePage() {
+  if (win && !win.isDestroyed()) win.loadFile('pages/licenca.html').catch(() => {})
+}
+
 function ensureDataDir() {
   const dataDir = process.env.NEXHOTEL_DATA_DIR || path.join(app.getPath('userData'), 'data')
   fs.mkdirSync(dataDir, { recursive: true })
@@ -16,7 +37,7 @@ function ensureDataDir() {
 
 function createWindow() {
   const dataDir = ensureDataDir()
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     width: 1540,
     height: 950,
     minWidth: 1240,
@@ -35,11 +56,17 @@ function createWindow() {
       nodeIntegration: true,
       nodeIntegrationInSubFrames: true,
       contextIsolation: false,
+      devTools: !app.isPackaged,
       additionalArguments: [`--data-dir=${dataDir}`]
     }
   })
 
-  win.loadFile('index.html')
+  win.webContents.on('will-navigate', (event, url) => {
+    if (!ghzBackend?.isSessionAuthorized() && !isLicensePageUrl(url)) {
+      event.preventDefault()
+      loadLicensePage()
+    }
+  })
 
   if (process.env.NEXHOTEL_DEBUG === '1') {
     win.webContents.on('console-message', (_event, level, message, line, sourceId) => {
@@ -152,13 +179,19 @@ function createWindow() {
 
 app.setAppUserModelId(APP_ID)
 
-require('./js/ghz-backend')({
+ghzBackend = require('./js/ghz-backend')({
   app, ipcMain, getDataDir: ensureDataDir,
   appId: 'nexhotel',
   manifestUrl: 'https://raw.githubusercontent.com/GhuzzBeatz/NexHotel/master/update-manifest.json'
 })
 
-app.whenReady().then(createWindow)
+app.whenReady().then(async () => {
+  if (!gotSingleInstanceLock) return
+  createWindow()
+  await win.loadFile('pages/licenca.html')
+  const result = await ghzBackend.validateForStartup().catch(() => ({ ok: false }))
+  if (result?.ok && win && !win.isDestroyed()) await win.loadFile('index.html')
+})
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit()
