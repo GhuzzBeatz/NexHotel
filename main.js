@@ -33,6 +33,7 @@ function createWindow() {
     },
     webPreferences: {
       nodeIntegration: true,
+      nodeIntegrationInSubFrames: true,
       contextIsolation: false,
       additionalArguments: [`--data-dir=${dataDir}`]
     }
